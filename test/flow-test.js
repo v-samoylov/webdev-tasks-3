@@ -698,6 +698,6 @@ describe('method makeAsync', function () {
         };
         var asyncFunc = flow.makeAsync(syncFunc);
         asyncFunc('ABC', callback);
-        checkResults(checkResults);
+        checkResults();
     });
 });
