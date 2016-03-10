@@ -68,6 +68,7 @@ describe('method serial', function () {
         'should call the main callback after all functions results\n      have been received',
         function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.equal('ABCD', result, 'callback havent been called appropriately');
             done();
         }
@@ -86,7 +87,6 @@ describe('method serial', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             result += 'D';
             checkResults();
         });
@@ -95,6 +95,7 @@ describe('method serial', function () {
     });
     it('should call each function only once', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.ok(func1.calledOnce, 'func1 has not been called only once');
             assert.ok(func2.calledOnce, 'func2 has not been called only once');
             assert.ok(func3.calledOnce, 'func3 has not been called only once');
@@ -111,7 +112,6 @@ describe('method serial', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.serial([func1, func2, func3], callback);
@@ -119,6 +119,7 @@ describe('method serial', function () {
     });
     it('should call the main callback as soon as a function error appears', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.ok(func1.called, 'func1 has not been called');
             assert.ok(func2.called, 'func2 has not been called');
             assert.ok(!func3.called, 'func3 has been called after an error');
@@ -137,7 +138,6 @@ describe('method serial', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.serial([func1, func2, func3], callback);
@@ -145,6 +145,7 @@ describe('method serial', function () {
     });
     it('should pass to each function a result of a previous function', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.equal(func2.args[0][0], 'A', 'result has not been passed to func2');
             assert.equal(func3.args[0][0], 'B', 'result has not been passed to func3');
             done();
@@ -160,7 +161,6 @@ describe('method serial', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.serial([func1, func2, func3], callback);
@@ -168,6 +168,7 @@ describe('method serial', function () {
     });
     it('should pass a result of all functions to the main callback', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.equal(
                 callback.args[0][1], 'ABC',
                 'result of all functions has not been passed to the main callback'
@@ -185,7 +186,6 @@ describe('method serial', function () {
             setTimeout(next, 30, null, data + 'C');
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.serial([func1, func2, func3], callback);
@@ -193,6 +193,7 @@ describe('method serial', function () {
     });
     it('should pass a function error to the main callback', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.deepEqual(
                 callback.args[0][0], {message: 'ERROR'},
                 'function error has not been passed to the main callback'
@@ -211,7 +212,6 @@ describe('method serial', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.serial([func1, func2, func3], callback);
@@ -222,6 +222,7 @@ describe('method serial', function () {
 describe('method parallel', function () {
     it('should call the main callback', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.ok(callback.called, 'main callback has not been called');
             done();
         }
@@ -236,7 +237,6 @@ describe('method parallel', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.parallel([func1, func2, func3], 3, callback);
@@ -246,6 +246,7 @@ describe('method parallel', function () {
         'should call the main callback after all functions results\n      have been received',
         function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.deepEqual(
                 result, ['A', 'B', 'C'],
                 'the main callback has not been called properly'
@@ -267,7 +268,6 @@ describe('method parallel', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.parallel([func1, func2, func3], 5, callback);
@@ -275,6 +275,7 @@ describe('method parallel', function () {
     });
     it('should call each function only once', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.ok(func1.calledOnce, 'func1 has not been called only once');
             assert.ok(func2.calledOnce, 'func2 has not been called only once');
             assert.ok(func3.calledOnce, 'func3 has not been called only once');
@@ -291,7 +292,6 @@ describe('method parallel', function () {
             setTimeout(next, 30);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.parallel([func1, func2, func3], 5, callback);
@@ -299,6 +299,7 @@ describe('method parallel', function () {
     });
     it('should call all functions parallely', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.equal(result, 'BCA', 'functions have not been called parallely');
             done();
         }
@@ -323,7 +324,6 @@ describe('method parallel', function () {
             }, 20);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.parallel([func1, func2, func3], 5, callback);
@@ -331,6 +331,7 @@ describe('method parallel', function () {
     });
     it('should pass an array of results to the main callback', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.ok(result instanceof Array, 'not an array has been passed');
             done();
         }
@@ -346,7 +347,6 @@ describe('method parallel', function () {
             setTimeout(next, 20, null, 'C');
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             result = data;
             checkResults();
         });
@@ -355,6 +355,7 @@ describe('method parallel', function () {
     });
     it('should return results in the same order as functions have been passed', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.equal(
                 result.join(), 'A,B,C',
                 'the results have been returned in the wrong order'
@@ -373,7 +374,6 @@ describe('method parallel', function () {
             setTimeout(next, 20, null, 'C');
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             result = data;
             checkResults();
         });
@@ -383,6 +383,7 @@ describe('method parallel', function () {
     it('should not run parallely number of functions higher than the limit', function (done) {
         const LIMIT = 2;
         function checkResults() {
+            areResultsChecked = true;
             assert.ok(funcsRunningCounter <= LIMIT, 'limit is exceeded');
             done();
         }
@@ -411,7 +412,6 @@ describe('method parallel', function () {
             runAsyncFunction(20, next);
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             checkResults();
         });
         flow.parallel([func1, func2, func3], LIMIT, callback);
@@ -419,6 +419,7 @@ describe('method parallel', function () {
     });
     it('should pass a function error to the main callback', function (done) {
         function checkResults() {
+            areResultsChecked = true;
             assert.deepEqual(
                 errorFound, {message: 'ERROR'},
                 'the results have been returned in the wrong order'
@@ -438,7 +439,6 @@ describe('method parallel', function () {
             setTimeout(next, 20, null, 'C');
         });
         var callback = sinon.spy(function (err, data) {
-            areResultsChecked = true;
             errorFound = err;
             checkResults();
         });
