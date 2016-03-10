@@ -683,18 +683,36 @@ describe('method map', function () {
 
 describe('method makeAsync', function () {
     it('should return an asynchronous function', function () {
-        function checkResults() {
-            assert.equal(
-                result, 'ABC',
-                'asynchronous function has not been returned'
-            );
-        }
         var result = null;
         var syncFunc = function (data) {
             return data;
         };
         var callback = function (err, data) {
             result = data;
+        };
+        var asyncFunc = flow.makeAsync(syncFunc);
+        assert.ok(asyncFunc instanceof Function, 'not a function has been returned');
+        asyncFunc('ABC', callback);
+        assert.equal(
+            result, 'ABC',
+            'function is not asynchronous'
+        );
+    });
+    it('should pass a function error to the callback', function () {
+        function checkResults() {
+            assert.deepEqual(
+                errorFound, {message: 'ERROR'},
+                'function error has not been passed'
+            );
+        }
+        var errorFound = null;
+        var syncFunc = function (data) {
+            throw {message: 'ERROR'};
+        };
+        var callback = function (err, data) {
+            if (err) {
+                errorFound = err;
+            }
         };
         var asyncFunc = flow.makeAsync(syncFunc);
         asyncFunc('ABC', callback);
