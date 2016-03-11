@@ -376,7 +376,7 @@ describe('method parallel', function () {
             });
             flow.parallel([func1, func2, func3], LIMIT, callback);
             setTimeout(function () {
-                assert.ok(isLimitExceeded <= LIMIT, 'limit is exceeded');
+                assert.ok(!isLimitExceeded, 'limit is exceeded');
                 done();
             }, 100);
         }
